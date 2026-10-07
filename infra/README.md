@@ -20,7 +20,7 @@ This guide walks you through setting up the zen-pharma infrastructure on your ow
 10. [Step 7 — Provision Infrastructure via Pipeline](#10-step-7--provision-infrastructure-via-pipeline)
 11. [Step 8 — Verify the Infrastructure](#11-step-8--verify-the-infrastructure)
 12. [Infrastructure Details](#12-infrastructure-details)
-13. [Day-2 Operations](#13-day-2-operations)
+13. [Day-2 Operations](#13-day-2-operations) 
 14. [Destroying Infrastructure](#14-destroying-infrastructure)
 15. [Troubleshooting](#15-troubleshooting)
 
