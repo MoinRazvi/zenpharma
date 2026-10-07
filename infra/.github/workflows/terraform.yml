@@ -162,7 +162,7 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.action == 'destroy' &&
       github.event.inputs.confirm_destroy == 'destroy'
-    environment: dev   # ← approval gate for destroy too update.
+    environment: dev   # ← approval gate for destroy too update..
     defaults:
       run:
         working-directory: envs/dev
