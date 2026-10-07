@@ -17,11 +17,8 @@ on:
   pull_request:
     branches: [main]
     paths:
-    #  - 'envs/dev/**'
-    #  - 'modules/**'
-	
-	   - 'infra/envs/dev/**'
-       - 'infra/modules/**'
+      - 'infra/envs/dev/**'
+      - 'infra/modules/**'
 	  
   workflow_dispatch:
     inputs:
@@ -103,7 +100,7 @@ jobs:
       - name: Release state lock on failure
         if: failure() || cancelled()
         run: |
-          aws s3 rm s3://${{ vars.TF_STATE_BUCKET }}infra/envs/dev/terraform.tfstate.tflock || true
+          aws s3 rm s3://${{ vars.TF_STATE_BUCKET }}/envs/dev/terraform.tfstate.tflock || true
 
       - name: Upload plan file
         if: steps.plan.outcome == 'success'
