@@ -19,7 +19,7 @@ on:
     paths:
       - 'infra/envs/dev/**'
       - 'infra/modules/**'
-	  
+  
   workflow_dispatch:
     inputs:
       action:
