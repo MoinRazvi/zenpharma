@@ -8,13 +8,21 @@ on:
   push:
     branches: [main]
     paths:
-      - 'envs/dev/**'
-      - 'modules/**'
+  #    - 'envs/dev/**'
+  #    - 'modules/**'
+  
+       - 'infra/envs/dev/**'
+       - 'infra/modules/**'
+  
   pull_request:
     branches: [main]
     paths:
-      - 'envs/dev/**'
-      - 'modules/**'
+    #  - 'envs/dev/**'
+    #  - 'modules/**'
+	
+	   - 'infra/envs/dev/**'
+       - 'infra/modules/**'
+	  
   workflow_dispatch:
     inputs:
       action:
@@ -47,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: envs/dev
+        working-directory: infra/envs/dev
 
     steps:
       - uses: actions/checkout@v5
@@ -95,14 +103,14 @@ jobs:
       - name: Release state lock on failure
         if: failure() || cancelled()
         run: |
-          aws s3 rm s3://${{ vars.TF_STATE_BUCKET }}/envs/dev/terraform.tfstate.tflock || true
+          aws s3 rm s3://${{ vars.TF_STATE_BUCKET }}infra/envs/dev/terraform.tfstate.tflock || true
 
       - name: Upload plan file
         if: steps.plan.outcome == 'success'
         uses: actions/upload-artifact@v6
         with:
           name: tfplan
-          path: envs/dev/tfplan
+          path: infra/envs/dev/tfplan
           retention-days: 1
 
   # ── Apply ─────────────────────────────────────────────────────────────────
@@ -116,7 +124,7 @@ jobs:
     environment: dev   # ← pauses here and waits for manual approval
     defaults:
       run:
-        working-directory: envs/dev
+        working-directory: infra/envs/dev
 
     steps:
       - uses: actions/checkout@v5
@@ -140,7 +148,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: tfplan
-          path: envs/dev
+          path: infra/envs/dev/tfplan
 
       - name: Terraform Apply
         run: |
@@ -165,7 +173,7 @@ jobs:
     environment: dev   # ← approval gate for destroy too update..
     defaults:
       run:
-        working-directory: envs/dev
+        working-directory: infra/envs/dev
 
     steps:
       - uses: actions/checkout@v5
