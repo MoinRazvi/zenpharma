@@ -145,7 +145,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: tfplan
-          path: infra/envs/dev/tfplan
+          path: infra/envs/dev
 
       - name: Terraform Apply
         run: |
