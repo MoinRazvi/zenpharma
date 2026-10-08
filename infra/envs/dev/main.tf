@@ -6,6 +6,7 @@
 # Again changed - v4.
 # Again changed - v5.
 # Again changed - v6.
+# Again changed - v7 - eks nodes updated as assumed.
 locals {
   project = "pharma"
   env     = "dev"
