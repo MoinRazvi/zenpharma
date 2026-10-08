@@ -117,7 +117,7 @@ default_gitops = os.path.join(DEFAULT_PROJECT_ROOT, "gitops")
 GITOPS_PATH         = prompt("GITOPS_PATH",         "Local path to your gitops repo",
                              default_gitops, default_gitops)
 
-# Auto-fetch VPC ID from EKS cluster if not set in environment
+# Auto-fetch VPC ID from EKS cluster if not set in environment.
 VPC_ID = os.environ.get("VPC_ID", "")
 if not VPC_ID:
     info(f"Auto-fetching VPC ID for cluster '{CLUSTER_NAME}'...")

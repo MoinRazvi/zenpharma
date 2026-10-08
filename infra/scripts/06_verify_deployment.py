@@ -6,8 +6,8 @@
 #   1. Kubernetes pods  - all Running and Ready
 #   2. ArgoCD apps      - all Synced and Healthy
 #   3. External Secrets - all SecretSynced
-#   4. Services/Ingress - resources created
-#   5. HTTP endpoints   - health checks via ALB
+#   4. Services/Ingress - resources created.
+#   5. HTTP endpoints   - health checks via ALB.
 #
 # Run from the root of the dpp-assignment3 directory.
 # =============================================================================
