@@ -46,7 +46,7 @@ concurrency:
   cancel-in-progress: false   # wait, don't cancel — safer for Terraform
 
 jobs:
-  # ── Plan ──────────────────────────────────────────────────────────────────
+  # ──- Plan ──────────────────────────────────────────────────────────────────
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
