@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# Stage 2 - Configure External Secrets Operator
+# Stage 2 - Configure External Secrets Operator.
 #
 # Creates a ClusterSecretStore and ExternalSecrets so pods can pull
 # db-credentials and jwt-secret from AWS Secrets Manager automatically.

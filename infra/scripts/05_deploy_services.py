@@ -3,7 +3,7 @@
 # Stage 5 - Deploy Services
 #
 # Applies ArgoCD Application manifests for selected services so ArgoCD starts
-# syncing them to the cluster. Run after 04_run_pipeline.py has built images
+# syncing them to the cluster. Run after 04_run_pipeline.py has  built images
 # and updated the image tags in the gitops repo.
 #
 # Run from anywhere — paths are resolved relative to this script's location.

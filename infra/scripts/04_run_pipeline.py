@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# Stage 4 - Run CI Pipelines
+# Stage 4 - Run CI Pipelines.
 #
 # Triggers GitHub Actions CI workflows for selected services.
 # Each pipeline builds a Docker image, pushes it to ECR, and commits the new

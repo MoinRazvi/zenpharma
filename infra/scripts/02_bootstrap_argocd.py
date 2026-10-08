@@ -3,7 +3,7 @@
 # Stage 2 - Bootstrap ArgoCD
 #
 # After ArgoCD is installed (script 01), this script:
-#   1. Registers your gitops repo in ArgoCD
+#   1. Registers your gitops repo in ArgoCD.
 #   2. Creates the pharma AppProject
 #
 # Application deployment is handled by 05_deploy_services.py
