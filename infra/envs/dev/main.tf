@@ -94,17 +94,17 @@ module "secrets_manager" {
 }
 
 
-module "github_actions_iam" {
-  source = "../../modules/github-actions-iam"
+# module "github_actions_iam" {
+#   source = "../../modules/github-actions-iam"
 
-  project        = local.project
-  env            = local.env
-  aws_account_id = data.aws_caller_identity.current.account_id
-  aws_region     = local.region
+#   project        = local.project
+#   env            = local.env
+#   aws_account_id = data.aws_caller_identity.current.account_id
+#   aws_region     = local.region
 
-  github_org  = "MoinRazvi"
-  github_repo = "zenpharma"
+#   github_org  = "MoinRazvi"
+#   github_repo = "zenpharma"
 
-  # Set to "" if your ECR repositories do not share a common prefix.
-  ecr_repository_prefix = ""
-}
+#   # Set to "" if your ECR repositories do not share a common prefix.
+#   ecr_repository_prefix = ""
+# }

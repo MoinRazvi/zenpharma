@@ -46,9 +46,9 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:MoinRazvi/zenpharma:ref:refs/heads/main",
-        "repo:MoinRazvi/zenpharma:ref:refs/heads/develop",
-        "repo:MoinRazvi/zenpharma:ref:refs/heads/release/*"
+        "repo:MoinRazvi@132929507/zenpharma@1400125651:ref:refs/heads/main",
+        "repo:MoinRazvi@132929507/zenpharma@1400125651:ref:refs/heads/develop",
+        "repo:MoinRazvi@132929507/zenpharma@1400125651:ref:refs/heads/release/*"
       ]
     }
   }
@@ -74,9 +74,9 @@ resource "aws_iam_policy" "github_actions_ci_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "ECRAuth"
-        Effect = "Allow"
-        Action = ["ecr:GetAuthorizationToken"]
+        Sid      = "ECRAuth"
+        Effect   = "Allow"
+        Action   = ["ecr:GetAuthorizationToken"]
         Resource = "*"
       },
       {
