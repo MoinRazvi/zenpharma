@@ -55,6 +55,7 @@ jobs:
 
 
   # ── 2. Unit Tests with Coverage ──────────────────────────────────────────
+  
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -70,12 +71,13 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run tests with coverage
-        run: npm test -- --ci
+        run: npm test -- --ci --coverage
         env:
           CI: true
 
@@ -83,8 +85,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: coverage-report
-          path: coverage/
+          path: frontend/coverage/
           retention-days: 3
+
 
   # ── 3. Code Quality & Security (SonarCloud + npm audit) ──────────────────
   
