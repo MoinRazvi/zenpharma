@@ -211,37 +211,97 @@ jobs:
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
   # ── 6. Deploy — DEV (direct push to gitops) ──────────────────────────────
+  # deploy-dev:
+  #   name: Deploy — DEV
+  #   needs: docker-build-push
+  #   runs-on: ubuntu-latest
+  #   environment: dev
+  #   steps:
+  #     - uses: actions/checkout@v5
+
+  #     - name: Checkout GitOps repo
+  #       uses: actions/checkout@v5
+  #       with:
+  #         repository: ${{ env.GITOPS_REPO }}
+  #         token: ${{ secrets.GITOPS_TOKEN }}
+  #         path: _gitops
+
+  #     - name: Install yq
+  #       run: |
+  #         wget -qO /usr/local/bin/yq \
+  #           https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+  #         chmod +x /usr/local/bin/yq
+
+  #     - name: Update image tag — DEV
+  #       env:
+  #         IMAGE_TAG: ${{ needs.docker-build-push.outputs.image_tag }}
+  #       run: |
+  #         yq e ".image.tag = \"${IMAGE_TAG}\"" -i \
+  #           "_gitops/envs/dev/values-pharma-ui.yaml"
+  #         cd _gitops
+  #         git config user.name  "github-actions[bot]"
+  #         git config user.email "github-actions[bot]@users.noreply.github.com"
+  #         git add .
+  #         git diff --staged --quiet && echo "Already up to date" && exit 0
+  #         git commit -m "ci(dev): update pharma-ui → ${IMAGE_TAG}"
+  #         git push
+       
+  # ── 6. Deploy — DEV (direct GitOps update in monorepo) ─────────────
   deploy-dev:
     name: Deploy — DEV
     needs: docker-build-push
     runs-on: ubuntu-latest
     environment: dev
-    steps:
-      - uses: actions/checkout@v5
+    permissions:
+      contents: write
 
-      - name: Checkout GitOps repo
+    steps:
+      # 1. Checkout the monorepo
+      - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          repository: ${{ env.GITOPS_REPO }}
-          token: ${{ secrets.GITOPS_TOKEN }}
-          path: _gitops
+          ref: develop
+          token: ${{ secrets.GITHUB_TOKEN }}
 
+      # 2. Install yq
       - name: Install yq
         run: |
           wget -qO /usr/local/bin/yq \
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           chmod +x /usr/local/bin/yq
 
+      # 3. Update the image tag in the monorepo
       - name: Update image tag — DEV
         env:
           IMAGE_TAG: ${{ needs.docker-build-push.outputs.image_tag }}
         run: |
-          yq e ".image.tag = \"${IMAGE_TAG}\"" -i \
-            "_gitops/envs/dev/values-pharma-ui.yaml"
-          cd _gitops
-          git config user.name  "github-actions[bot]"
+          set -euo pipefail
+
+          FILE="gitops/argocd/envs/dev/values-pharma-ui.yaml"
+
+          if [ ! -f "$FILE" ]; then
+            echo "ERROR: GitOps values file not found: $FILE"
+            exit 1
+          fi
+
+          echo "Updating image tag to ${IMAGE_TAG}"
+          yq e ".image.tag = \"${IMAGE_TAG}\"" -i "$FILE"
+
+          # 4. Configure Git identity
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git diff --staged --quiet && echo "Already up to date" && exit 0
-          git commit -m "ci(dev): update pharma-ui → ${IMAGE_TAG}"
-          git push
+
+          # 5. Stage only the updated values file
+          git add "$FILE"
+
+          # 6. Skip commit if there are no changes
+          if git diff --staged --quiet; then
+            echo "Image tag is already up to date"
+            exit 0
+          fi
+
+          # 7. Commit the GitOps change
+          git commit -m "ci(dev): update pharma-ui to ${IMAGE_TAG}"
+
+          # 8. Push the change to develop
+          git push origin HEAD:develop
