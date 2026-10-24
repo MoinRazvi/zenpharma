@@ -191,8 +191,10 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            -f frontend/Dockerfile \
             -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.tag.outputs.image_tag }} \
-            -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest .
+            -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest \
+            frontend/
 
       - name: Trivy — scan image for vulnerabilities
         uses: aquasecurity/trivy-action@master
