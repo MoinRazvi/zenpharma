@@ -277,7 +277,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          FILE="gitops/argocd/envs/dev/values-pharma-ui.yaml"
+          FILE="gitops/envs/dev/values-pharma-ui.yaml"
 
           if [ ! -f "$FILE" ]; then
             echo "ERROR: GitOps values file not found: $FILE"
