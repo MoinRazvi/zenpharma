@@ -92,3 +92,19 @@ module "secrets_manager" {
   db_host     = module.rds.db_instance_address
   jwt_secret  = var.jwt_secret
 }
+
+
+# module "github_actions_iam" {
+#   source = "../../modules/github-actions-iam"
+
+#   project        = local.project
+#   env            = local.env
+#   aws_account_id = data.aws_caller_identity.current.account_id
+#   aws_region     = local.region
+
+#   github_org  = "MoinRazvi"
+#   github_repo = "zenpharma"
+
+#   # Set to "" if your ECR repositories do not share a common prefix.
+#   ecr_repository_prefix = ""
+# }

@@ -3,7 +3,7 @@ name: Promote pharma-ui to PROD
 # Triggered manually — picks up the image currently running in QA and opens
 # a PR in the GitOps repo to promote it to PROD.
 # PROD ArgoCD app requires manual sync after merge.
-# Just updated again for testing.
+# Just updated again for testing-v1.
 
 
 on:

@@ -190,6 +190,20 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Debug Terraform State
+        run: |
+          echo "Checking AWS identity..."
+          aws sts get-caller-identity
+
+          echo "Checking Terraform workspace..."
+          terraform workspace show
+
+          echo "Checking GitHub OIDC provider in Terraform state..."
+          terraform state list | grep 'module.iam.aws_iam_openid_connect_provider.github_actions' || true
+
+          echo "Checking Terraform state in S3..."
+          aws s3 ls s3://zen-pharma-terraform-state-moin/envs/dev/  
+
       - name: Terraform Destroy
         run: |
           terraform destroy \
