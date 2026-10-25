@@ -14,7 +14,7 @@ spec:
 
   source:
     repoURL: https://github.com/MoinRazvi/zenpharma.git
-    targetRevision: HEAD
+    targetRevision: develop
     path: gitops/helm-charts
     helm:
       valueFiles:
