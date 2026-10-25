@@ -1,15 +1,15 @@
-name: PR Check — supplier-service
+name: PR Check — auth-service
 
 on:
   push:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
-      - 'supplier-service/**'
-      - '.github/workflows/ci-pr-supplier-service.yml'
+      - 'backend/auth-service/**'
+      - '.github/workflows/ci-pr-auth-service.yml'
   pull_request:
     branches: [develop]
     paths:
-      - 'supplier-service/**'
+      - 'backend/auth-service/**'
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
   pr-check:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
-      service-name: supplier-service
-      service-dir: supplier-service
+      service-name: auth-service
+      service-dir: backend/auth-service
       needs-database: true
     secrets: inherit

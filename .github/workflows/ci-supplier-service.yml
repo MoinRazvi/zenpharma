@@ -8,7 +8,7 @@ on:
   push:
     branches: [develop, 'release/**']
     paths:
-      - 'supplier-service/**'
+      - 'backend/supplier-service/**'
       - '.github/workflows/ci-supplier-service.yml'
   workflow_dispatch:
     inputs:
@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/_java-build.yml
     with:
       service-name: supplier-service
-      service-dir: supplier-service
+      service-dir: backend/supplier-service
       ecr-repository: supplier-service
       aws-region: us-east-1
       needs-database: true

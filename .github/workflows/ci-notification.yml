@@ -8,7 +8,7 @@ on:
   push:
     branches: [develop, 'release/**']
     paths:
-      - 'notification-service/**'
+      - 'backend/notification-service/**'
       - '.github/workflows/ci-notification.yml'
   workflow_dispatch:
     inputs:
@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/_node-build.yml
     with:
       service-name: notification-service
-      service-dir: notification-service
+      service-dir: backend/notification-service
       ecr-repository: notification-service
       node-version: '22'
       aws-region: us-east-1

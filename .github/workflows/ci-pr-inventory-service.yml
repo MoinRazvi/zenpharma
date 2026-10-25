@@ -4,12 +4,12 @@ on:
   push:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
-      - 'inventory-service/**'
+      - 'backend/inventory-service/**'
       - '.github/workflows/ci-pr-inventory-service.yml'
   pull_request:
     branches: [develop]
     paths:
-      - 'inventory-service/**'
+      - 'backend/inventory-service/**'
 
 permissions:
   contents: read
@@ -22,6 +22,6 @@ jobs:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
       service-name: inventory-service
-      service-dir: inventory-service
+      service-dir: backend/inventory-service
       needs-database: true
     secrets: inherit

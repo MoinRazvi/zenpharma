@@ -4,12 +4,12 @@ on:
   push:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
-      - 'notification-service/**'
+      - 'backend/notification-service/**'
       - '.github/workflows/ci-pr-notification.yml'
   pull_request:
     branches: [develop]
     paths:
-      - 'notification-service/**'
+      - 'backend/notification-service/**'
 
 permissions:
   contents: read
@@ -22,6 +22,6 @@ jobs:
     uses: ./.github/workflows/_node-pr-check.yml
     with:
       service-name: notification-service
-      service-dir: notification-service
+      service-dir: backend/notification-service
       node-version: '22'
     secrets: inherit

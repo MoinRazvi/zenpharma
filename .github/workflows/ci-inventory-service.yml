@@ -1,15 +1,15 @@
-name: CI/CD — manufacturing-service
+name: CI/CD — inventory-service
 
 # Triggers on push to develop / release branches only.
-# Feature branches and PRs → ci-pr-manufacturing-service.yml
+# Feature branches and PRs → ci-pr-inventory-service.yml
 # PROD promotion → promote-prod.yml (workflow_dispatch)
 
 on:
   push:
     branches: [develop, 'release/**']
     paths:
-      - 'manufacturing-service/**'
-      - '.github/workflows/ci-manufacturing-service.yml'
+      - 'backend/inventory-service/**'
+      - '.github/workflows/ci-inventory-service.yml'
   workflow_dispatch:
     inputs:
       ref:
@@ -25,24 +25,24 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: manufacturing-service
+  ECR_REPOSITORY: inventory-service
   GITOPS_REPO: ${{ vars.GITOPS_REPO }}
 
 jobs:
 
   build:
-    name: "Build & Security Gates (manufacturing-service)"
+    name: "Build & Security Gates (inventory-service)"
     uses: ./.github/workflows/_java-build.yml
     with:
-      service-name: manufacturing-service
-      service-dir: manufacturing-service
-      ecr-repository: manufacturing-service
+      service-name: inventory-service
+      service-dir: backend/inventory-service
+      ecr-repository: inventory-service
       aws-region: us-east-1
       needs-database: true
     secrets: inherit
 
   deploy-dev:
-    name: "🚀 Deploy manufacturing-service → DEV"
+    name: "🚀 Deploy inventory-service → DEV"
     needs: build
     runs-on: ubuntu-latest
     environment: dev
@@ -61,15 +61,12 @@ jobs:
           IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
         run: |
           yq e ".image.tag = \"${IMAGE_TAG}\"" -i \
-            "_gitops/envs/dev/values-manufacturing-service.yaml"
+            "_gitops/envs/dev/values-inventory-service.yaml"
           cd _gitops
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git diff --staged --quiet && echo "Already up to date" && exit 0
-          git commit -m "ci(dev): update manufacturing-service → ${IMAGE_TAG}"
-          for i in 1 2 3 4 5; do
-            git push && break
-            echo "Push attempt $i failed — rebasing and retrying..."
-            git pull --rebase
-          done
+          git commit -m "ci(dev): update inventory-service → ${IMAGE_TAG}"
+          git pull --rebase origin main
+          git push

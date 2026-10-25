@@ -1,16 +1,15 @@
-name: CI/CD — drug-catalog-service
+name: CI/CD — auth-service
 
 # Triggers on push to develop / release branches only.
-# Feature branches and PRs → ci-pr-drug-catalog.yml
+# Feature branches and PRs → ci-pr-auth-service.yml
 # PROD promotion → promote-prod.yml (workflow_dispatch)
-# Note: gitops uses "catalog-service" as the values file name for this service.
 
 on:
   push:
     branches: [develop, 'release/**']
     paths:
-      - 'drug-catalog-service/**'
-      - '.github/workflows/ci-drug-catalog.yml'
+      - 'backend/auth-service/**'
+      - '.github/workflows/ci-auth-service.yml'
   workflow_dispatch:
     inputs:
       ref:
@@ -26,25 +25,24 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: drug-catalog-service
+  ECR_REPOSITORY: auth-service
   GITOPS_REPO: ${{ vars.GITOPS_REPO }}
-  GITOPS_SERVICE_NAME: catalog-service
 
 jobs:
 
   build:
-    name: "Build & Security Gates (drug-catalog)"
+    name: "Build & Security Gates (auth-service)"
     uses: ./.github/workflows/_java-build.yml
     with:
-      service-name: drug-catalog-service
-      service-dir: drug-catalog-service
-      ecr-repository: drug-catalog-service
+      service-name: auth-service
+      service-dir: backend/auth-service
+      ecr-repository: auth-service
       aws-region: us-east-1
       needs-database: true
     secrets: inherit
 
   deploy-dev:
-    name: "🚀 Deploy drug-catalog → DEV"
+    name: "🚀 Deploy auth-service → DEV"
     needs: build
     runs-on: ubuntu-latest
     environment: dev
@@ -61,15 +59,14 @@ jobs:
       - name: Update image tag — DEV
         env:
           IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
-          SVC: ${{ env.GITOPS_SERVICE_NAME }}
         run: |
           yq e ".image.tag = \"${IMAGE_TAG}\"" -i \
-            "_gitops/envs/dev/values-${SVC}.yaml"
+            "_gitops/envs/dev/values-auth-service.yaml"
           cd _gitops
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git diff --staged --quiet && echo "Already up to date" && exit 0
-          git commit -m "ci(dev): update ${SVC} → ${IMAGE_TAG}"
+          git commit -m "ci(dev): update auth-service → ${IMAGE_TAG}"
           git pull --rebase origin main
           git push

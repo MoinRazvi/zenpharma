@@ -1,15 +1,12 @@
-name: CI/CD — inventory-service
-
-# Triggers on push to develop / release branches only.
-# Feature branches and PRs → ci-pr-inventory-service.yml
-# PROD promotion → promote-prod.yml (workflow_dispatch)
+name: CI/CD — qc-service
 
 on:
   push:
     branches: [develop, 'release/**']
     paths:
-      - 'inventory-service/**'
-      - '.github/workflows/ci-inventory-service.yml'
+      - 'backend/qc-service/**'
+      - '.github/workflows/ci-qc-service.yml'
+
   workflow_dispatch:
     inputs:
       ref:
@@ -25,24 +22,24 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: inventory-service
+  ECR_REPOSITORY: qc-service
   GITOPS_REPO: ${{ vars.GITOPS_REPO }}
 
 jobs:
 
   build:
-    name: "Build & Security Gates (inventory-service)"
+    name: "Build & Security Gates (qc-service)"
     uses: ./.github/workflows/_java-build.yml
     with:
-      service-name: inventory-service
-      service-dir: inventory-service
-      ecr-repository: inventory-service
+      service-name: qc-service
+      service-dir: backend/qc-service
+      ecr-repository: qc-service
       aws-region: us-east-1
-      needs-database: true
+      needs-database: false
     secrets: inherit
 
   deploy-dev:
-    name: "🚀 Deploy inventory-service → DEV"
+    name: "🚀 Deploy qc-service → DEV"
     needs: build
     runs-on: ubuntu-latest
     environment: dev
@@ -61,12 +58,12 @@ jobs:
           IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
         run: |
           yq e ".image.tag = \"${IMAGE_TAG}\"" -i \
-            "_gitops/envs/dev/values-inventory-service.yaml"
+            "_gitops/envs/dev/values-qc-service.yaml"
           cd _gitops
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git diff --staged --quiet && echo "Already up to date" && exit 0
-          git commit -m "ci(dev): update inventory-service → ${IMAGE_TAG}"
+          git commit -m "ci(dev): update qc-service → ${IMAGE_TAG}"
           git pull --rebase origin main
           git push
