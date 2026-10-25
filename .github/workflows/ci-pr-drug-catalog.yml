@@ -1,15 +1,15 @@
-name: PR Check — manufacturing-service
+name: PR Check — drug-catalog
 
 on:
   push:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
-      - 'manufacturing-service/**'
-      - '.github/workflows/ci-pr-manufacturing-service.yml'
+      - 'backend/drug-catalog-service/**'
+      - '.github/workflows/ci-pr-drug-catalog.yml'
   pull_request:
     branches: [develop]
     paths:
-      - 'manufacturing-service/**'
+      - 'backend/drug-catalog-service/**'
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
   pr-check:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
-      service-name: manufacturing-service
-      service-dir: manufacturing-service
+      service-name: drug-catalog-service
+      service-dir: backend/drug-catalog-service
       needs-database: true
     secrets: inherit

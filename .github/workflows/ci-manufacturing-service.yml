@@ -8,7 +8,7 @@ on:
   push:
     branches: [develop, 'release/**']
     paths:
-      - 'manufacturing-service/**'
+      - 'backend/manufacturing-service/**'
       - '.github/workflows/ci-manufacturing-service.yml'
   workflow_dispatch:
     inputs:
@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/_java-build.yml
     with:
       service-name: manufacturing-service
-      service-dir: manufacturing-service
+      service-dir: backend/manufacturing-service
       ecr-repository: manufacturing-service
       aws-region: us-east-1
       needs-database: true

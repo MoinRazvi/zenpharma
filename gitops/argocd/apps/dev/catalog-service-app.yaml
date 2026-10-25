@@ -13,9 +13,9 @@ spec:
   project: pharma
 
   source:
-    repoURL: https://github.com/zenpharma/gitops.git
-    targetRevision: HEAD
-    path: helm-charts
+    repoURL: https://github.com/MoinRazvi/zenpharma.git
+    targetRevision: develop
+    path: gitops/helm-charts
     helm:
       valueFiles:
         - ../envs/dev/values-catalog-service.yaml

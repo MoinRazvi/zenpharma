@@ -7,12 +7,12 @@ on:
   push:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
-      - 'api-gateway/**'
+      - 'backend/api-gateway/**'
       - '.github/workflows/ci-pr-api-gateway.yml'
   pull_request:
     branches: [develop]
     paths:
-      - 'api-gateway/**'
+      - 'backend/api-gateway/**'
 
 permissions:
   contents: read
@@ -25,6 +25,6 @@ jobs:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
       service-name: api-gateway
-      service-dir: api-gateway
+      service-dir: backend/api-gateway
       needs-database: false
     secrets: inherit

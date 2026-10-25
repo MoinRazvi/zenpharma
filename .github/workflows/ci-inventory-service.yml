@@ -1,0 +1,103 @@
+
+name: CI/CD — inventory-service
+
+# Triggers on push to develop / release branches only.
+# Feature branches and PRs → ci-pr-inventory-service.yml
+# DEV deployment updates the monorepo GitOps values file.
+# PROD promotion → promote-prod.yml (workflow_dispatch)
+
+on:
+  push:
+    branches:
+      - develop
+      - release/**
+    paths:
+      - backend/inventory-service/**
+      - .github/workflows/ci-inventory-service.yml
+      - .github/workflows/_java-build.yml
+
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch to build
+        required: false
+        default: develop
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+  actions: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: inventory-service
+
+jobs:
+  # 1. Build, test, scan, push to ECR, and sign the image
+  build:
+    name: Build & Security Gates (inventory-service)
+    uses: ./.github/workflows/_java-build.yml
+    with:
+      service-name: inventory-service
+      service-dir: backend/inventory-service
+      ecr-repository: inventory-service
+      aws-region: us-east-1
+      needs-database: true
+    secrets: inherit
+
+  # 2. Update DEV image tag in the monorepo
+  deploy-dev:
+    name: Deploy inventory-service → DEV
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Update image tag — DEV
+        env:
+          IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${IMAGE_TAG}" ]; then
+            echo "ERROR: IMAGE_TAG is empty."
+            exit 1
+          fi
+
+          if ! command -v yq >/dev/null 2>&1; then
+            echo "ERROR: yq is not installed on the runner."
+            exit 1
+          fi
+
+          VALUES_FILE="gitops/envs/dev/values-inventory-service.yaml"
+
+          if [ ! -f "$VALUES_FILE" ]; then
+            echo "ERROR: GitOps values file not found: $VALUES_FILE"
+            exit 1
+          fi
+
+          yq -i '.image.tag = strenv(IMAGE_TAG)' "$VALUES_FILE"
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "github-actions[bot]@users.noreply.github.com"
+
+          git add "$VALUES_FILE"
+
+          if git diff --cached --quiet; then
+            echo "Image tag is already up to date."
+            exit 0
+          fi
+
+          git commit -m "ci(dev): update inventory-service to ${IMAGE_TAG}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

@@ -4,12 +4,12 @@ on:
   push:
     branches: ['feat-*', 'fix-*', 'chore-*']
     paths:
-      - 'qc-service/**'
+      - 'backend/qc-service/**'
       - '.github/workflows/ci-pr-qc-service.yml'
   pull_request:
     branches: [develop]
     paths:
-      - 'qc-service/**'
+      - 'backend/qc-service/**'
 
 permissions:
   contents: read
@@ -22,6 +22,6 @@ jobs:
     uses: ./.github/workflows/_java-pr-check.yml
     with:
       service-name: qc-service
-      service-dir: qc-service
+      service-dir: backend/qc-service
       needs-database: false
     secrets: inherit

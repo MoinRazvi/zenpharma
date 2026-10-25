@@ -16,10 +16,10 @@ spec:
     # Replace 'ravdy' with your GitHub username after forking zen-gitops
     repoURL: https://github.com/MoinRazvi/zenpharma.git
     targetRevision: HEAD
-    path: helm-charts
+    path: gitops/helm-charts
     helm:
       valueFiles:
-        - ../envs/dev/values-pharma-ui.yaml
+         - ../envs/dev/values-pharma-ui.yaml
 
   destination:
     server: https://kubernetes.default.svc
