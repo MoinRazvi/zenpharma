@@ -12,9 +12,9 @@ metadata:
 spec:
   project: pharma
   source:
-    repoURL: https://github.com/zenpharma/gitops.git
+    repoURL: https://github.com/MoinRazvi/zenpharma.git
     targetRevision: HEAD
-    path: helm-charts
+    path: gitops/helm-charts
     helm:
       valueFiles:
         - ../envs/dev/values-qc-service.yaml
